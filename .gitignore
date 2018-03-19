@@ -1,0 +1,13 @@
+target
+classes
+.settings
+.project
+.classpath
+*~
+*bak
+/bin/
+*.jar
+*.class
+*.iml
+.gitignore
+.idea
