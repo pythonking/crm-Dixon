@@ -1,5 +1,6 @@
 package com.leoIt.crm.files;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -42,16 +43,19 @@ public class QiniuFileStore implements FileStore {
      */
     @Override
     public String saveFile(InputStream inputStream, String fileName) throws IOException {
-        Configuration configuration = new Configuration(Zone.zone1());
+        Configuration configuration = new Configuration(Zone.zone0());
         UploadManager uploadManager = new UploadManager(configuration);
 
-        Auth auth = Auth.create(qiniuAccessKey,qiuiuSecretKey);
+        Auth auth = Auth.create(qiniuAccessKey, qiuiuSecretKey);
         String uploadToken = auth.uploadToken(bucketName);
 
-        byte[] bytes = IOUtils.toByteArray(inputStream);
-        Response response = uploadManager.put(bytes,null,uploadToken);
-        DefaultPutRet defaultPutRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
-        return defaultPutRet.key;
+        try {
+            Response response = uploadManager.put(IOUtils.toByteArray(inputStream), null, uploadToken);
+            DefaultPutRet defaultPutRet = JSON.parseObject(response.bodyString(), DefaultPutRet.class);
+            return defaultPutRet.key;
+        } catch (IOException ex) {
+            throw new RuntimeException("上传文件到七牛异常", ex);
+        }
     }
 
     /**

@@ -7,7 +7,8 @@ import com.leoIt.crm.files.FileStore;
 import com.leoIt.crm.mapper.DiskMapper;
 import com.leoIt.crm.service.DiskService;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * 公司网盘业务层
@@ -31,6 +27,8 @@ import java.util.UUID;
  */
 @Service
 public class DiskServiceImpl implements DiskService {
+
+    private static Logger logger = LoggerFactory.getLogger(DiskServiceImpl.class);
 
     @Autowired
     private DiskMapper diskMapper;
@@ -106,6 +104,7 @@ public class DiskServiceImpl implements DiskService {
         try {
             newFileName = fileStore.saveFile(inputStream,fileName);
         } catch (IOException e) {
+            logger.error("方法 saveNewFile 异常,",e);
             throw new ServiceException(e,"保存文件异常");
         }
         disk.setSaveName(newFileName);

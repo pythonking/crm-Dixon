@@ -1,6 +1,7 @@
 package com.leoIt.crm.controller;
 
 import com.leoIt.crm.auth.ShiroUtil;
+import com.leoIt.crm.entity.Account;
 import com.leoIt.crm.service.AccountService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -58,11 +59,10 @@ public class HomeController {
             subject.login(usernamePasswordToken);
 
             //获取当前登录的对象
-            //Account account = (Account) subject.getPrincipal();
+            Account account = (Account) subject.getPrincipal();
             //将登录成功的对象放入Session
-            //Session session = subject.getSession();
-            //session.setAttribute("curr_account",account);
-
+            HttpSession httpSession = request.getSession();
+            httpSession.setAttribute("curr_account",account);
             //跳转到登录前访问的URL
             String url = "/home";
             SavedRequest savedRequest = WebUtils.getSavedRequest(request);
