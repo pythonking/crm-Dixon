@@ -85,7 +85,7 @@ public class DiskController {
     @GetMapping("/download")
     public void downloadFile(@RequestParam(name = "_") Integer id,
                              @RequestParam(required = false,defaultValue = "") String fileName,
-                             HttpServletResponse response) {
+                             HttpServletResponse response)  {
         try {
             OutputStream outputStream = response.getOutputStream();
             InputStream inputStream = diskService.downloadFile(id);
